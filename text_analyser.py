@@ -38,7 +38,7 @@ class TextAnalyser:
     def get_sentences(self):
         i = 1
 
-        for k in range(len(self.word_list)):
+        for k in range(len(self.word_list_with_signs)):
             if any(word in values.ends for word in self.word_list_with_signs[k]):
 
                 if self.word_list_with_signs[k] in values.specials:
@@ -46,10 +46,10 @@ class TextAnalyser:
                     continue
                 else:
 
-                    if k == (len(self.word_list) - 1):
+                    if k == (len(self.word_list_with_signs) - 1):
                         self.sentences.append(i)
                         i = 1
-                    elif (self.word_list[k + 1])[0].isupper():
+                    elif (self.word_list_with_signs[k + 1])[0].isupper():
                         self.sentences.append(i)
                         i = 1
                     else:
