@@ -13,11 +13,10 @@ class TextAnalyser:
     def get_text(self, input_text):
         self.text = input_text
 
-        if not self.text.endswith(values.ends):
-            print("No punctuation mark in the end, try again")
+        if not self.text.endswith(values.end):
             return False
-
-        return True
+        else:
+            return True
 
     def words_counter(self):
         self.word_list_with_signs = self.text.split()
@@ -32,14 +31,13 @@ class TextAnalyser:
             else:
                 word_stat[self.word_list[i]] = 1
 
-        for key, value in word_stat.items():
-            print("{0}: {1}".format(key, str(value)))
+        return word_stat
 
     def get_sentences(self):
         i = 1
 
         for k in range(len(self.word_list_with_signs)):
-            if any(word in values.ends for word in self.word_list_with_signs[k]):
+            if any(word in values.end for word in self.word_list_with_signs[k]):
 
                 if self.word_list_with_signs[k] in values.specials:
                     i += 1
@@ -69,18 +67,16 @@ class TextAnalyser:
                 average += elem
 
             average /= text_len
-            print("Average count of words in sentence:", average)
 
             if text_len % 2 == 1:
                 median = self.sentences[(text_len - 1) // 2 + 1]
             else:
                 median = (self.sentences[(text_len - 1) // 2] + self.sentences[(text_len - 1) // 2 + 1]) / 2
 
-            print("Median count of words in sentence:", median)
         else:
             median = average = self.sentences[0]
-            print("Average count of words in sentence:", average)
-            print("Median count of words in sentence:", median)
+
+        return median, average
 
     def get_n_grams(self, n, k):
         n_grams_stat = {}
@@ -92,9 +88,7 @@ class TextAnalyser:
 
                 for i in range(len(elem)):
                     if (i + n) <= len(elem):
-                        word = ''
-                        for j in range(i, i + n):
-                            word += elem[j]
+                        word = elem[i:i+n]
                         if word in n_grams_stat:
                             n_grams_stat[word] += 1
                         else:
@@ -104,12 +98,4 @@ class TextAnalyser:
 
         sorted_n_grams = {key: value for key, value in
                           sorted(n_grams_stat.items(), key=lambda item: item[1], reverse=True)}
-        i = 1
-
-        for key, value in sorted_n_grams.items():
-            print("{0}: {1}".format(key, str(value)))
-
-            if i == k:
-                break
-            else:
-                i += 1
+        return sorted_n_grams

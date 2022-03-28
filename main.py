@@ -7,9 +7,16 @@ while True:
     text = input()
     if stats.get_text(text):
         break
+    print("No punctuation mark in the end, try again")
 
-stats.words_counter()
-stats.avarage()
+words_list = stats.words_counter()
+
+for key, value in words_list.items():
+    print("{0}: {1}".format(key, str(value)))
+
+median, average = stats.avarage()
+print("Average count of words in sentence:", average)
+print("Median count of words in sentence:", median)
 
 while True:
     print("Write k:")
@@ -21,10 +28,9 @@ while True:
     else:
         try:
             k = int(K)
+            break
         except ValueError:
             print("Try again")
-        else:
-            break
 
 while True:
     print("Write n:")
@@ -36,9 +42,17 @@ while True:
     else:
         try:
             n = int(N)
+            break
         except ValueError:
             print("Try again")
-        else:
-            break
 
-stats.get_n_grams(n, k)
+
+n_grams = stats.get_n_grams(n, k)
+i = 1
+for key, value in n_grams.items():
+    print("{0}: {1}".format(key, str(value)))
+
+    if i == k:
+        break
+    else:
+        i += 1
