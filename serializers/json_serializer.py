@@ -1,6 +1,7 @@
 import inspect
 from multiprocessing.context import set_spawning_popen
 import re
+from types import NoneType
 from xml.etree.ElementTree import tostring
 from .general_serializer import BaseSerializer
 
@@ -13,14 +14,16 @@ class JsonSerializer(BaseSerializer):
         return string
 
     def get_simple_value(self, value):
-        if type(value) == bool:
+        if isinstance(value, bool):
             row = str(value).lower()
-        elif type(value) == str:
+        elif isinstance(value, str):
             row = f"\"{value}\""
-        elif type(value) == float or type(value) == int:
+        elif isinstance(value, (int, float)):
             row = str(value)
         elif value is None:
             row = "null"
+        elif isinstance(value, bytes):
+            row = 'bytes' 
         return row + ','
     
     def set_simple_value(self, string):
@@ -43,7 +46,7 @@ class JsonSerializer(BaseSerializer):
         indent += 4
         for key, value in data.items():
             row = ' ' * indent + f"\"{key}\": "
-            if isinstance(value, (float, int, str, bool)) or value is None:
+            if isinstance(value, (float, int, str, bool, NoneType)):
                 row += self.get_simple_value(value)
                 rows.append(row)
             elif isinstance(value, (dict)):
@@ -61,7 +64,7 @@ class JsonSerializer(BaseSerializer):
                     row = self.get_list(value, indent)
                     rows = rows + row
             elif isinstance(value, bytes):
-                rows.append(row + 'aboba')
+                rows.append(row + 'bytes')
             elif inspect.isfunction(value):
                 rows.append(row + '{')
                 temp = self.function_to_dict(value)
@@ -103,7 +106,7 @@ class JsonSerializer(BaseSerializer):
         rows = []
         indent += 4
         for value in data:
-            if isinstance(value, (float, int, str, bool)) or value is None:
+            if isinstance(value, (float, int, str, bool, NoneType)):
                 row = ' ' * indent + self.get_simple_value(value)
                 rows.append(row)
             elif isinstance(value, (dict)):
@@ -147,7 +150,7 @@ class JsonSerializer(BaseSerializer):
 
     def dumps(self, data, indent = 0):
         rows = []
-        if isinstance(data, (float, int, str, bool)) or data is None:
+        if isinstance(data, (float, int, str, bool, NoneType)):
             string = self.get_simple_value(data)
             string = string[:-1]
         elif isinstance(data, dict):

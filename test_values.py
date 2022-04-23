@@ -41,8 +41,10 @@ test_none = None
 test_list = [12, [13, [14, 15]]]
 test_dict = {"first" : 1, "second" : {"third": "3", "fourth" : True}}
 
-def test_func(s = 5):
-    i = 1
-    for j in range(s, test_int):
-        i *= 2
+def test_func(s = 11):
+    i = int(s / 5)
+    if i > 10:
+        return 10
+    for j in range(s, 11):
+        i += test_func(i)
     return i

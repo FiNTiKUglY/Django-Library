@@ -1,4 +1,5 @@
 import inspect
+from types import NoneType
 
 class BaseSerializer():
 
@@ -20,40 +21,20 @@ class BaseSerializer():
         return dict_values
         
     @staticmethod
-    def function_to_dict(func):
-        result_code = {}
-        result_globals = {}
+    def function_to_dict(func): #no globals and bytes
+        function_members = {}
+        function_code = {}
 
-        attributes = dict(inspect.getmembers(func))
-        attributes_code = dict(inspect.getmembers(attributes['__code__']))
+        for name, value in inspect.getmembers(func):
+            if name == "__code__" or name == "__name__" or name == "__defaults__":
+                function_members[name] = value
+        for name, value in inspect.getmembers(function_members["__code__"]):
+            if (not name.startswith("__") 
+                    and isinstance(value, (int, float, str, bool, NoneType, tuple, dict, list, bytes, set))):
+                function_code[name] = value
 
-        for key, value in attributes_code.items():
-            if key[0] != "_" and key != "replace" and key != "co_lines" and key != 'co_linetable':
-                if isinstance(value, str) and len(value) == 0:
-                    result_code[key] = None
-                else:
-                    result_code[key] = value
-
-        for element in attributes_code["co_names"]:
-            if element in attributes["__globals__"]:
-                value = attributes["__globals__"][element]
-            else:
-                continue
-
-            if element == attributes["__name__"]:
-                result_globals[element] = element
-
-            elif isinstance(value, (int, float, bool, bytes, str)):
-                result_globals[element] = value
-
-            elif isinstance(value, dict):
-                result_globals[element] = value
-
-            elif isinstance(value, (list, set, frozenset, tuple)):
-                result_globals[element] = value
-
-        return {"__code__": result_code, "__globals__": result_globals, "__name__": attributes['__name__'],
-                "__defaults__": attributes['__defaults__'], }
+        function_members["__code__"] = function_code
+        return function_members
 
     @staticmethod
     def dict_to_function(self):
@@ -65,5 +46,5 @@ class BaseSerializer():
             if isinstance(value, dict):
                 if dict_values['__code__']:
                     dict_values[key] = BaseSerializer.dict_to_functuion(value)
-        return type("mytype", (), dict_values)()
+        return type("obj", (), dict_values)()
 
