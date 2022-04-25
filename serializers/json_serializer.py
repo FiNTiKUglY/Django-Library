@@ -1,11 +1,10 @@
 import inspect
-from multiprocessing.context import set_spawning_popen
 import re
+import base64
 from types import NoneType
-from xml.etree.ElementTree import tostring
-from .general_serializer import BaseSerializer
+from .general_serializer import BaseSerializer as bs
 
-class JsonSerializer(BaseSerializer):
+class JsonSerializer(bs):
     def list_to_str(self, list):
         string = ''
         for row in list:
@@ -23,11 +22,14 @@ class JsonSerializer(BaseSerializer):
         elif value is None:
             row = "null"
         elif isinstance(value, bytes):
-            row = 'bytes' 
+            row = str(base64.b64encode(value))
         return row + ','
     
     def set_simple_value(self, string):
-        if string[0] == '\"':
+        if string.startswith('b'): 
+            string = re.sub(r'[b]', '', string)
+            value = base64.b64decode(string)
+        elif string[0] == '\"':
             value = re.sub(r'["]', '', string)
         elif string == 'null':
             value = None
@@ -46,7 +48,7 @@ class JsonSerializer(BaseSerializer):
         indent += 4
         for key, value in data.items():
             row = ' ' * indent + f"\"{key}\": "
-            if isinstance(value, (float, int, str, bool, NoneType)):
+            if isinstance(value, (float, int, str, bool, NoneType, bytes)):
                 row += self.get_simple_value(value)
                 rows.append(row)
             elif isinstance(value, (dict)):
@@ -63,8 +65,6 @@ class JsonSerializer(BaseSerializer):
                     rows.append(row + "[")
                     row = self.get_list(value, indent)
                     rows = rows + row
-            elif isinstance(value, bytes):
-                rows.append(row + 'bytes')
             elif inspect.isfunction(value):
                 rows.append(row + '{')
                 temp = self.function_to_dict(value)
@@ -75,6 +75,11 @@ class JsonSerializer(BaseSerializer):
                 temp = self.function_to_dict(value.__func__)
                 row = self.get_dict(temp, indent)
                 rows = rows + row
+            elif inspect.isclass(value):
+                rows.append(row + '{')
+                temp = self.class_to_dict(value)
+                row = self.get_dict(temp, indent)
+                rows += row
             else:
                 rows.append(row + "{")
                 temp = self.object_to_dict(value)
@@ -91,11 +96,20 @@ class JsonSerializer(BaseSerializer):
             if rows[index] == '}':
                 return dict_values, index + 1
             items = rows[index].split(":")
+            if len(items) > 1:
+                for i in range(2, len(items)):
+                    items[1] += items[i]
             key = re.sub(r'["]', '', items[0])
-            if items[1] == '[':
+            if items[1] == '{'+'}':
+                dict_values[key] = {}
+                index += 1
+            elif items[1] == '[]':
+                dict_values[key] = []
+                index += 1
+            elif items[1].startswith("["):
                 value, index = self.set_list(rows, index + 1)
                 dict_values[key] = value
-            elif items[1] == '{':
+            elif items[1].startswith("{"):
                 value, index = self.set_dict(rows, index + 1)
                 dict_values[key] = value
             else:
@@ -106,7 +120,7 @@ class JsonSerializer(BaseSerializer):
         rows = []
         indent += 4
         for value in data:
-            if isinstance(value, (float, int, str, bool, NoneType)):
+            if isinstance(value, (float, int, str, bool, NoneType, bytes)):
                 row = ' ' * indent + self.get_simple_value(value)
                 rows.append(row)
             elif isinstance(value, (dict)):
@@ -123,6 +137,11 @@ class JsonSerializer(BaseSerializer):
                     rows.append(' ' * indent + "[")
                     row = self.get_list(value, indent)
                     rows = rows + row
+            elif inspect.isclass(value):
+                rows.append(' ' * indent + '{')
+                temp = self.class_to_dict(value)
+                row = self.get_dict(temp, indent)
+                rows += row
             else:
                 rows.append(' ' * indent + "{")
                 temp = self.object_to_dict(value)
@@ -136,10 +155,16 @@ class JsonSerializer(BaseSerializer):
     def set_list(self, rows, index):
         list_values = []
         for row in rows:
-            if rows[index] == '[':
+            if rows[index] == '{'+'}':
+                list_values.append({})
+                index += 1
+            if rows[index] == '[]':
+                list_values.append([])
+                index += 1
+            elif rows[index].startswith('['):
                 result, index = self.set_list(rows, index + 1)
                 list_values.append(result)
-            elif rows[index] == '{':
+            elif rows[index].startswith('{'):
                 result, index = self.set_dict(rows, index + 1)
                 list_values.append(result)
             elif rows[index] == ']':
@@ -150,7 +175,7 @@ class JsonSerializer(BaseSerializer):
 
     def dumps(self, data, indent = 0):
         rows = []
-        if isinstance(data, (float, int, str, bool, NoneType)):
+        if isinstance(data, (float, int, str, bool, NoneType, bytes)):
             string = self.get_simple_value(data)
             string = string[:-1]
         elif isinstance(data, dict):
@@ -185,6 +210,13 @@ class JsonSerializer(BaseSerializer):
             rows += row
             rows[-1] = rows[-1][:-1]
             string = self.list_to_str(rows)
+        elif inspect.isclass(data):
+            rows.append('{')
+            temp = self.class_to_dict(data)
+            row = self.get_dict(temp, indent)
+            rows += row
+            rows[-1] = rows[-1][:-1]
+            string = self.list_to_str(rows)
         else:
             data = self.object_to_dict(data)
             rows.append('{')
@@ -202,6 +234,10 @@ class JsonSerializer(BaseSerializer):
             data, temp = self.set_list(rows, 1)
         elif rows[0] == '{':
             data, temp = self.set_dict(rows, 1)
+            if "__code__" in data:
+                return self.dict_to_function(data)
+            elif "__bases__" in data:
+                return self.dict_to_class(data)
         else:
             data = self.set_simple_value(rows[0])
         return data

@@ -4,29 +4,12 @@ class TestFullClass():
         self.age = 15
         self.weigth = 65.5
         self.name = "BB23A"
-        self.list = [[11, 12], [12, [13, 14, [{"aboba" : 12, "neaboba" : 14}, 16]]], [13, 14, 15]]
+        self.bytes = bytes(19)
+        self.list = [[11, 12], [12, [13, 14, [17, 16]]], [13, 14, 15], {"yes" : 1, "no" : 0}]
         self.quest = None
 
-
-class TestFullClassWithMethods():
-    def __init__(self):
-        self.creation = True
-        self.age = 15
-        self.weigth = 65.5
-        self.name = "BB23A"
-        self.list = [[11, 12], [12, [13, 14, [{"aboba" : 12, "neaboba" : 14}, 16]]], [13, 14, 15]]
-        self.quest = None
-    
-    def zark(iz):
-        if iz is None:
-            print("ill")
-        else:
-            iz = 2
-        return iz
-
-
-class TestClassWithMethods():
-    def zark(iz):
+class TestFullClassWithMethods(TestFullClass):
+    def bark(iz):
         if iz is None:
             print("ill")
         else:
@@ -40,6 +23,7 @@ test_bool = False
 test_none = None
 test_list = [12, [13, [14, 15]]]
 test_dict = {"first" : 1, "second" : {"third": "3", "fourth" : True}}
+test_bytes = bytes(12)
 
 def test_func(s = 11):
     i = int(s / 5)
