@@ -26,7 +26,7 @@ class JsonSerializer(bs):
         return row + ','
     
     def set_simple_value(self, string):
-        if string.startswith('b'): 
+        if string.startswith('b'):
             string = re.sub(r'[b]', '', string)
             value = base64.b64decode(string)
         elif string[0] == '\"':

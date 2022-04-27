@@ -76,3 +76,16 @@ class BaseSerializer():
 
         return type(class_values["__name__"], tuple(bases), class_values["__dict__"])
 
+    def dumps(self, obj):
+        pass
+
+    def dump(self, obj, fp):
+        with open(fp, "w") as file:
+            file.write(self.dumps(obj))
+
+    def loads(self, string):
+        pass
+
+    def load(self, fp):
+        with open(fp, "r") as file:
+            return self.loads(file.read())

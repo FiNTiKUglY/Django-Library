@@ -7,11 +7,11 @@ from yaml.loader import FullLoader
 class YamlSerializer(bs):
     def dumps(self, data):
         dict_yaml = {}
-        if not isinstance(data, (float, int, str, bool, NoneType, dict, list, tuple, set)):
+        if isinstance(data, (float, int, str, bool, NoneType, dict, list, tuple, set)):
+            string = yaml.dump(data)
+        else:
             dict_yaml = self.get_dict(data)
             string = yaml.dump(dict_yaml)
-        else:
-            string = yaml.dump(data)
         return string
 
     def get_dict(self, data):
