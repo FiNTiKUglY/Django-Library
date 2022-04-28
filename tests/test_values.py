@@ -1,3 +1,5 @@
+import math
+
 class TestFullClass():
     def __init__(self):
         self.creation = True
@@ -29,6 +31,7 @@ def test_func(s = 11):
     i = int(s / 5)
     if i > 10:
         return 10
-    for j in range(s, 11):
+    for j in range(s, test_int):
         i += test_func(i)
+        i = math.sin(i)
     return i
