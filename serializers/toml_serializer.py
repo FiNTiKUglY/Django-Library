@@ -3,7 +3,7 @@ from .json_serializer import JsonSerializer
 from types import NoneType
 import inspect
 import toml
-import tomllib
+import tomli
 import base64
 import re
 
@@ -71,6 +71,6 @@ class TomlSerializer(bs):
             items[1] = re.sub(r'[ b]', '', items[1])
             data = base64.b64decode(items[1])
         else:
-            data = tomllib.loads(string)
+            data = tomli.loads(string)
             data = self.set_dict(data)
         return data

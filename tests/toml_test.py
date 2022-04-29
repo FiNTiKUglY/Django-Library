@@ -25,8 +25,6 @@ class TestYaml(unittest.TestCase):
             self.ser_toml.loads(self.ser_toml.dumps(test_fullclass)))
         self.assertEqual(test_func(), self.ser_toml.loads(self.ser_toml.dumps(test_func))())
         self.assertEqual(test_func(51), self.ser_toml.loads(self.ser_toml.dumps(test_func))(51))
-        self.assertEqual(bs.object_to_dict(test_fullclass), 
-              bs.object_to_dict(self.ser_toml.loads(self.ser_toml.dumps(TestFullClass))()))
 
 if __name__ == "__main__":
     unittest.main()

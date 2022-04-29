@@ -80,7 +80,7 @@ class BaseSerializer():
 
     @staticmethod
     def dict_to_function(func_values):
-        if sys.version_info == (3, 10):
+        if sys.version_info.minor == 10:
             func_code = {"co_argcount": None, "co_posonlyargcount": None, "co_kwonlyargcount": None, "co_nlocals": None,
                      "co_stacksize": None, "co_flags": None, "co_code": None, "co_consts": None, "co_names": None,
                      "co_varnames": None, "co_filename": None, "co_name": None, "co_firstlineno": None,
