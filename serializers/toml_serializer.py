@@ -1,9 +1,15 @@
 from .general_serializer import BaseSerializer as bs
+from .json_serializer import JsonSerializer
 from types import NoneType
 import inspect
 import toml
+import tomllib
+import base64
+import re
 
 class TomlSerializer(bs):
+    ser_json = JsonSerializer
+
     def dumps(self, data):
         dict_toml = {}
         if isinstance(data, (float, int, str, bool, list, tuple, set)):
@@ -11,6 +17,9 @@ class TomlSerializer(bs):
             string = toml.dumps(dict_toml)
         elif isinstance(data, NoneType):
             string = "value = null"
+        elif isinstance(data, bytes):
+            string = "value = "
+            string += str(base64.b64encode(data))
         elif isinstance(data, dict):
             string = toml.dumps(data)
         else:
@@ -32,7 +41,7 @@ class TomlSerializer(bs):
             for value in dict_values["__bases__"]:
                 temp_list.append(self.get_dict(value))
             dict_values["__bases__"] = temp_list
-        elif isinstance(data, (int, float, str, NoneType, bool, dict, tuple, list, set, bytes)):
+        elif isinstance(data, (int, float, str, NoneType, bool, tuple, list, set, bytes)):
             return data
         else:
             dict_values = self.object_to_dict(data)
@@ -44,11 +53,10 @@ class TomlSerializer(bs):
         if len(data) == 1 and "value" in data:
             return data["value"]
         if "__code__" in data:
-            data["__code__"]["co_code"] = bytes(data["__code__"]["co_code"])
-            data["__code__"]["co_lnotab"] = bytes(data["__code__"]["co_lnotab"])
             data = bs.dict_to_function(data)
         elif "__bases__" in data:
             data = bs.dict_to_class(data)
+            
         else:
             for key, value in data.items():
                 if isinstance(value, dict):
@@ -58,7 +66,11 @@ class TomlSerializer(bs):
     def loads(self, string):
         if string == "value = null":
             data = None
+        elif re.search("value = b", string):
+            items = string.split("=")
+            items[1] = re.sub(r'[ b]', '', items[1])
+            data = base64.b64decode(items[1])
         else:
-            data = toml.loads(string)
+            data = tomllib.loads(string)
             data = self.set_dict(data)
         return data

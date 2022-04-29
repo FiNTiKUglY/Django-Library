@@ -19,14 +19,14 @@ class TestYaml(unittest.TestCase):
         self.assertEqual(test_str, self.ser_toml.loads(self.ser_toml.dumps(test_str)))
         self.assertEqual(test_none, self.ser_toml.loads(self.ser_toml.dumps(test_none)))
         self.assertEqual(test_dict, self.ser_toml.loads(self.ser_toml.dumps(test_dict)))
-        #self.assertEqual(test_list, self.ser_toml.loads(self.ser_toml.dumps(test_list)))
-        #self.assertEqual(test_bytes, self.ser_toml.loads(self.ser_toml.dumps(test_bytes)))
-        #self.assertEqual(bs.object_to_dict(test_fullclass), 
-            #self.ser_toml.loads(self.ser_toml.dumps(test_fullclass)))
-        #self.assertEqual(test_func(), self.ser_toml.loads(self.ser_toml.dumps(test_func))())
-        #self.assertEqual(test_func(51), self.sertoml.loads(self.ser_toml.dumps(test_func))(51))
-        #self.assertEqual(bs.object_to_dict(test_fullclass), 
-            #bs.object_to_dict(self.ser_toml.loads(self.ser_toml.dumps(TestFullClass))()))
+        self.assertEqual(test_list, self.ser_toml.loads(self.ser_toml.dumps(test_list)))
+        self.assertEqual(test_bytes, self.ser_toml.loads(self.ser_toml.dumps(test_bytes)))
+        self.assertEqual(bs.object_to_dict(test_fullclass), 
+            self.ser_toml.loads(self.ser_toml.dumps(test_fullclass)))
+        self.assertEqual(test_func(), self.ser_toml.loads(self.ser_toml.dumps(test_func))())
+        self.assertEqual(test_func(51), self.ser_toml.loads(self.ser_toml.dumps(test_func))(51))
+        self.assertEqual(bs.object_to_dict(test_fullclass), 
+              bs.object_to_dict(self.ser_toml.loads(self.ser_toml.dumps(TestFullClass))()))
 
 if __name__ == "__main__":
     unittest.main()

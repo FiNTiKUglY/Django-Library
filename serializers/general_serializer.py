@@ -1,6 +1,6 @@
 import inspect
-from os import stat
 from types import NoneType, FunctionType, CodeType
+import sys
 
 class BaseSerializer():
     @staticmethod
@@ -40,7 +40,7 @@ class BaseSerializer():
             if key == "__code__" or key == "__name__" or key == "__defaults__" or key == "__globals__":
                 function_members[key] = value
         for key, value in inspect.getmembers(function_members["__code__"]):
-            if (not key.startswith("__") and key != 'co_linetable'
+            if (not key.startswith("_") and key != 'co_linetable'
                     and isinstance(value, (int, float, str, bool, NoneType, tuple, dict, list, bytes, set))):
                 function_code[key] = value
 
@@ -80,13 +80,24 @@ class BaseSerializer():
 
     @staticmethod
     def dict_to_function(func_values):
-        func_code = {"co_argcount": None, "co_posonlyargcount": None, "co_kwonlyargcount": None, "co_nlocals": None,
+        if sys.version_info == (3, 10):
+            func_code = {"co_argcount": None, "co_posonlyargcount": None, "co_kwonlyargcount": None, "co_nlocals": None,
                      "co_stacksize": None, "co_flags": None, "co_code": None, "co_consts": None, "co_names": None,
                      "co_varnames": None, "co_filename": None, "co_name": None, "co_firstlineno": None,
                      "co_lnotab": None, "co_freevars": (), "co_cellvars": ()}
+        else:
+            func_code = {"co_argcount": None, "co_posonlyargcount": None, "co_kwonlyargcount": None, "co_nlocals": None,
+                     "co_stacksize": None, "co_flags": None, "co_code": None, "co_consts": None, "co_names": None,
+                     "co_varnames": None, "co_filename": None, "co_name": None, "co_qualname" : None,
+                     "co_firstlineno": None, "co_endlinetable": None, "co_columntable": None, "co_exceptiontable": None,
+                     "co_lnotab": None, "co_freevars": (), "co_cellvars": ()}
         for key, value in func_values['__code__'].items():
             if isinstance(value, list):
-                value = tuple(value)
+                if (key == "co_code" or key == "co_endlinetable" or key == "co_columntable" or 
+                        key == "co_exceptiontable" or key == "co_lnotab"):
+                    value = bytes(value)
+                else:
+                    value = tuple(value)
             func_code[key] = value
 
         for key, value in func_values['__globals__'].items():

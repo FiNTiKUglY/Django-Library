@@ -6,9 +6,7 @@ class TestFullClass():
         self.age = 15
         self.weigth = 65.5
         self.name = "BB23A"
-        self.bytes = bytes(19)
         self.list = [[11, 12], [12, [13, 14, [17, 16]]], [13, 14, 15]]
-        self.quest = None
 
 class TestFullClassWithMethods(TestFullClass):
     def bark(iz):
