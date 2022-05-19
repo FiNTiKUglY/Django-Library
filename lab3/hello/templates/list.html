@@ -1,0 +1,39 @@
+﻿{% extends 'base.html' %}
+
+	{% block content %}
+		<h1 align="center">
+			Все книги
+		</h1>
+		<form method="post">
+			<input type="search" class="form-control">
+		</form>
+		<table class="table" align="center">
+			<form>
+				<tr>
+					<th>
+						<a href="/">
+						Название
+						</a>
+					</th>
+					<th>
+						<a href="/">
+						Автор
+						</a>
+					</th>
+					<th>
+						<a href="/">
+						Год
+						</a>
+					</th>
+				</tr>
+			</form>
+		</table>
+		<div align="center">
+			{% for book in books %}
+				<div>
+					<a href="{{ book.content }}">{{ book }}</a>
+				</div>
+			{% endfor %}
+		</div>
+
+	{% endblock %}
