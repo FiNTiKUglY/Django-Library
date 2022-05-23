@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Book
+from .models import Book, Order
 from .forms import SignUpForm, LogInForm
 from django.contrib.auth import login, logout
 
@@ -34,4 +34,13 @@ def log_in(request):
     else:
         form = LogInForm()
     return render(request, 'login.html', {'form': form})
+
+
+def orders(request):
+    orders = Order.objects.filter(user__username=request.user.get_username())
+    return render(request, 'orders.html', {'orders': orders})
+
+
+def book(request):
+    return render(request, 'book.html')
 
