@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="home" style="margin: 8% 40%">
+    <form class="form" method="post">
+        {% csrf_token %}
+        <div id="wrapper]">
+            {{form.as_p}}
+        </div>
+        <button type="submit" class="btn btn-success">Sign up</button>
+    </form>
+</div>
+{% endblock %}

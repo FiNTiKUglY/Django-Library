@@ -1,6 +1,7 @@
 ﻿{% extends 'base.html' %}
 
 	{% block content %}
+		<div style="width: 75%; margin: 0 auto">
 		<h1 align="center">
 			Все книги
 		</h1>
@@ -28,12 +29,13 @@
 				</tr>
 			</form>
 		</table>
-		<div align="center">
-			{% for book in books %}
-				<div>
-					<a href="{{ book.content }}">{{ book }}</a>
-				</div>
-			{% endfor %}
+			<div class="list-group">
+				{% for book in books %}
+  					<a href="{{ book.content }}" class="list-group-item">
+    					<h4 class="list-group-item-heading">{{ book.title }}</h4>
+    					<p class="list-group-item-text">{{ book.author }}, {{ book.year }}</p>
+  					</a>
+				{% endfor %}
+			</div>
 		</div>
-
 	{% endblock %}
