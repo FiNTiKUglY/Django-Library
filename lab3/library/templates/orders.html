@@ -6,31 +6,34 @@
 			Заказы
 		</h1>
 			<div class="list-group">
-				{% for order in orders %}
-					{% if order.is_active == True %}
-  					<div style="background-color: #feff82"  class="list-group-item">
-    					<h2 class="list-group-item-heading">Заказ №{{ order.id }}</h2>
-						{% for book in order.book.all %}
+				{% for mail in mails %}
+					<div style="background-color: #74ff6e"  class="list-group-item">
+						<div id="mail" style="float: right; line-height: 10px">
+							<p>Получатель: {{ mail.name }} {{ mail.surname }}</p>
+							<p>{{ mail.adress }}, {{ mail.index }}</p>
+						</div>
+    					<h2 class="list-group-item-heading">Заказ №{{ mail.order.id }}</h2>
+						{% for book in mail.order.book.all %}
     						<h4 class="list-group-item-text">{{ book }}</h4>
-							<a href="/remove/{{ order.id }}/{{ book.id }}" style="color: red">
+						{% endfor %}
+  					</div>
+				{% endfor %}
+				{% if active_order %}
+					<div style="background-color: #feff82"  class="list-group-item">
+    					<h2 class="list-group-item-heading">Заказ №{{ active_order.id }}</h2>
+						{% for book in active_order.book.all %}
+    						<h4 class="list-group-item-text">{{ book }}</h4>
+							<a href="/remove/{{ active_order.id }}/{{ book.id }}" style="color: red">
 								<span class="glyphicon glyphicon-minus"></span>
 								Удалить
 							</a>
 						{% endfor %}
-						<a href="/mail/{{ order.id }}" style="float: right" class="btn-sm btn-success">
+						<a href="/mail/{{ active_order.id }}" style="float: right" class="btn-sm btn-success">
 							<span class="glyphicon glyphicon-ok"></span>
 							Завершить
 						</a>
   					</div>
-					{% else %}
-					<div style="background-color: #74ff6e"  class="list-group-item">
-    					<h2 class="list-group-item-heading">Заказ №{{ order.id }}</h2>
-						{% for book in order.book.all %}
-    						<h4 class="list-group-item-text">{{ book }}</h4>
-						{% endfor %}
-  					</div>
-					{% endif %}
-				{% endfor %}
+				{% endif %}
 			</div>
 		</div>
 	{% endblock %}

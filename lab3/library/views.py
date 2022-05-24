@@ -37,8 +37,9 @@ def log_in(request):
 
 
 def orders(request):
-    orders = Order.objects.filter(user__username=request.user.get_username())
-    return render(request, 'orders.html', {'orders': orders})
+    active_order = Order.objects.filter(user__username=request.user.get_username(), is_active=True).first()
+    mails = Mail.objects.filter(order__user__username=request.user.get_username())
+    return render(request, 'orders.html', {'active_order': active_order, 'mails': mails})
 
 
 def add_in_order(request, id):
