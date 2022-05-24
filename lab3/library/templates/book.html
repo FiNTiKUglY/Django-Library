@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+	{% block content %}
+		<div class="container" style="background-color: #ffffff; margin: 3% auto; width: 80%">
+			<h3 align="center">{{ book.title }}</h3>
+			<div style="float: right">
+				<p>Автор: {{ book.author }}</p>
+				<p>Год: {{ book.year }}</p>
+			</div>
+			<div align="center">
+				<image>br<br>br<br>br<br>br<br>br<br>br<br>br<br>br<br>br<br>br<br>br<br>br<br>br<br>br<br>br<br>br<br>br<br>br<br>br<br></image>
+			</div>
+			<a class="btn btn-default" style="float: bottom; margin-left: 15%; margin-bottom: 3%" href="{{ book.content }}">
+				<span class="glyphicon glyphicon-eye-open"></span>
+				Читать онлайн
+			</a>
+			<a class="btn btn-success" style="float: right; margin-right: 15%; margin-bottom: 3%" href="{{ book.id }}/add/">
+				<span class="glyphicon glyphicon-shopping-cart"</span>
+				Купить
+			</a>
+		</div>
+	{% endblock %}

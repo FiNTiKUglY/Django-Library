@@ -18,4 +18,15 @@ class Order(models.Model):
     is_active = models.BooleanField('Статус', null=True)
 
     def __str__(self):
-        return f"?"
+        return f"Order №{self.id}"
+
+
+class Mail(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.PROTECT)
+    name = models.CharField('Имя', max_length=30)
+    surname = models.CharField('Фамилия', max_length=30)
+    adress = models.CharField('Адрес', max_length=50)
+    index = models.IntegerField('Почтовый индекс')
+
+    def __str__(self):
+        return f"{self.order} - {self.adress} {self.index}"

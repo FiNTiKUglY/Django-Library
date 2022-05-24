@@ -12,9 +12,15 @@
     					<h2 class="list-group-item-heading">Заказ №{{ order.id }}</h2>
 						{% for book in order.book.all %}
     						<h4 class="list-group-item-text">{{ book }}</h4>
-							<a href="#">Удалить</a>
+							<a href="/remove/{{ order.id }}/{{ book.id }}" style="color: red">
+								<span class="glyphicon glyphicon-minus"></span>
+								Удалить
+							</a>
 						{% endfor %}
-						<a href="#" style="float: right" class="btn-sm btn-success">Завершить</a>
+						<a href="/mail/{{ order.id }}" style="float: right" class="btn-sm btn-success">
+							<span class="glyphicon glyphicon-ok"></span>
+							Завершить
+						</a>
   					</div>
 					{% else %}
 					<div style="background-color: #74ff6e"  class="list-group-item">
