@@ -2,33 +2,11 @@
 
 	{% block content %}
 		<div style="width: 75%; margin: 0 auto">
-		<h1 align="center">
-			Все книги
-		</h1>
-		<form method="post">
-			<input type="search" class="form-control">
+		<h1 align="center">Все книги</h1>
+		<form name="search" method="post">
+			{% csrf_token %}
+			<input type="search" name="search" class="form-control">
 		</form>
-		<table class="table" align="center">
-			<form>
-				<tr>
-					<th>
-						<a href="/">
-						Название
-						</a>
-					</th>
-					<th>
-						<a href="/">
-						Автор
-						</a>
-					</th>
-					<th>
-						<a href="/">
-						Год
-						</a>
-					</th>
-				</tr>
-			</form>
-		</table>
 			<div class="list-group">
 				{% for book in books %}
   					<a href="/book/{{ book.id }}"class="list-group-item">

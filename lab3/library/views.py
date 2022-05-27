@@ -1,3 +1,5 @@
+import operator
+
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Book, Order, Mail
@@ -6,7 +8,12 @@ from django.contrib.auth import login, logout
 
 
 def index(request):
-    books = Book.objects.all()
+    if request.method == 'POST':
+        books = Book.objects.filter(title__icontains=request.POST['search'])
+        books = sorted(books, key=operator.attrgetter('title'))
+    else:
+        books = Book.objects.all()
+        books = sorted(books, key=operator.attrgetter('title'))
     return render(request, 'list.html', {'books': books})
 
 
@@ -82,4 +89,3 @@ def mail(request, id):
     else:
         form = MailForm()
     return render(request, 'mail.html', {'form': form})
-
