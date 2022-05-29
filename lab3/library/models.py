@@ -25,6 +25,8 @@ class Mail(models.Model):
     order = models.OneToOneField(Order, on_delete=models.PROTECT)
     name = models.CharField('Имя', max_length=30)
     surname = models.CharField('Фамилия', max_length=30)
+    phone = models.CharField('Телефон', max_length=13)
+    email = models.EmailField('Эл. почта')
     adress = models.CharField('Адрес', max_length=50)
     index = models.IntegerField('Почтовый индекс')
 

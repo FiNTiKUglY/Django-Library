@@ -11,6 +11,8 @@
 						<div id="mail" style="float: right; line-height: 10px">
 							<p>Получатель: {{ mail.name }} {{ mail.surname }}</p>
 							<p>{{ mail.adress }}, {{ mail.index }}</p>
+							<p>{{ mail.phone }}</p>
+							<p>{{ mail.email }}</p>
 						</div>
     					<h2 class="list-group-item-heading">Заказ №{{ mail.order.id }}</h2>
 						{% for book in mail.order.book.all %}
