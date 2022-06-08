@@ -1,0 +1,19 @@
+﻿{% extends 'base.html' %}
+
+	{% block content %}
+		<div style="width: 75%; margin: 0 auto">
+		<h1 align="center">Все книги</h1>
+		<form name="search" method="post">
+			{% csrf_token %}
+			<input type="search" name="search" class="form-control">
+		</form>
+			<div class="list-group">
+				{% for book in books %}
+  					<a href="/book/{{ book.id }}"class="list-group-item">
+    					<h4 class="list-group-item-heading">{{ book.title }}</h4>
+    					<p class="list-group-item-text">{{ book.author }}, {{ book.year }}</p>
+  					</a>
+				{% endfor %}
+			</div>
+		</div>
+	{% endblock %}
